@@ -12,14 +12,29 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
 {
     private readonly IProjectRepository _projectRepository = projectRepository;
 
+    //public async Task<Project?> CreateProjectAsync(ProjectRegistrationForm form)
+    //{
+    //    var projectEntity = await _projectRepository.GetAsync(x => x.Title == form.Title);
+    //    var entity = ProjectFactory.Create(form);
+    //    await _projectRepository.CreateAsync(entity!);
+
+    //    return ProjectFactory.Create(projectEntity!);
+
+    //}
+
     public async Task<Project?> CreateProjectAsync(ProjectRegistrationForm form)
     {
-        var projectEntity = await _projectRepository.GetAsync(x => x.Title == form.Title);
-        var entity = ProjectFactory.Create(form);
-        await _projectRepository.CreateAsync(entity!);
+        var existingProject = await _projectRepository.GetAsync(x => x.Title == form.Title);
 
-        return ProjectFactory.Create(projectEntity!);
+        if (existingProject != null)
+        {
+            return ProjectFactory.Create(existingProject);
+        }
 
+        var newProject = ProjectFactory.Create(form);
+        await _projectRepository.CreateAsync(newProject);
+
+        return ProjectFactory.Create(newProject);
     }
 
 
