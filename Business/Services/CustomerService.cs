@@ -1,4 +1,5 @@
-﻿using Business.DTOs;
+﻿using System.Diagnostics;
+using Business.DTOs;
 using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
@@ -40,7 +41,7 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
     }
 
 
-    // denna kod genereras av ChatGPT där den uppdaterar en avnändare
+    // Denna kod genereras av ChatGpt. Den uppdaterar en befintlig Kund (Customer) i databasen, med hjälp av (Task<bool>) så returneras en "true" eller "false", om uppdateringen lyckades så kommer det att bli "true" om inte, så kommer det bli "false".
     public async Task<bool> UpdateCustomerAsync(int id, CustomerUpdateForm form)
     {
         if (form == null)
@@ -51,7 +52,7 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
         if (existingCustomer != null)
         {
             existingCustomer.FirstName = form.FirstName;
-            existingCustomer.Id = form.Id;
+            //existingCustomer.Id = form.Id;
 
             await _customerRepository.UpdateAsync(existingCustomer);
         }
@@ -61,16 +62,26 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
 
 
 
+   
+
     public async Task<bool> DeleteCustomerAsync(int id)
     {
-        var existingCustomer = await _customerRepository.GetAsync(x =>x.Id == id);
-        if (existingCustomer != null)
+        var customerEntity = await _customerRepository.GetAsync(x => x.Id == id);
+        if (customerEntity == null)
+            return false;
+
+        try
         {
+            var result = await _customerRepository.DeleteAsync(customerEntity);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
             return false;
         }
-
-        return await _customerRepository.DeleteAsync(x => x.Id == id);
     }
+
 
 
 }

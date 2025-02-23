@@ -1,8 +1,10 @@
-﻿using Business.DTOs;
+﻿using System.Diagnostics;
+using Business.DTOs;
 using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
 using Data.Interfaces;
+using Data.Repositories;
 
 namespace Data.Services;
 
@@ -75,14 +77,21 @@ public class UserService(IUserRepository userRepository) : IUserService
 
 
 
-    public  async Task<bool> DeleteUserAsync(int id)
+    public async Task<bool> DeleteUserAsync(int id)
     {
-        var existingUser = await _userRepository.GetAsync(x => x.Id == id);
-        if (existingUser != null)
+        var customerEntity = await _userRepository.GetAsync(x => x.Id == id);
+        if (customerEntity == null)
+            return false;
+
+        try
         {
+            var result = await _userRepository.DeleteAsync(customerEntity);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
             return false;
         }
-
-        return await _userRepository.DeleteAsync(x => x.Id == id);
     }
 }

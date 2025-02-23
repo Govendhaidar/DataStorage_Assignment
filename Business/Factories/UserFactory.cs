@@ -17,7 +17,7 @@ public static class UserFactory
 
     public static User? Create(UserEntity entity) => entity == null ? null : new()
     {
-        Id = entity.Id,
+       Id = entity.Id,
        FirstName = entity.FirstName,
        LastName = entity.LastName,
        Email = entity.Email

@@ -1,4 +1,5 @@
-﻿using Business.DTOs;
+﻿using System.Diagnostics;
+using Business.DTOs;
 using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
@@ -34,7 +35,7 @@ public class ProductService(IProductRepository productRepository) : IProductServ
 
     }
 
-        // ChatGpt
+        //  Genereras av ChatGpt. Denna kod uppdaterar en befintlig produkt i databasen. Den har en Async i sig vilket innebär att den körs utan att blocka huvudtråden. Den returnerar en "true" eller "false" med hjälp av (task<bool>). True betyder att uppdateringen lyckades medan false betyder tvärtom och att den inte lyckades.
     
     public async Task<bool> UpdateProductAsync(int id, ProductUpdateForm form)
     {
@@ -46,7 +47,9 @@ public class ProductService(IProductRepository productRepository) : IProductServ
         if (existingProduct != null)
         {
             existingProduct.ProductName = form.ProductName;
-            existingProduct.Id = form.Id;
+            existingProduct.ProductDescription = form.ProductDescription;
+            existingProduct.Price = form.ProductPrice;
+            //existingProduct.Id = form.Id;
 
             await _productRepository.UpdateAsync(existingProduct);
         }
@@ -55,16 +58,23 @@ public class ProductService(IProductRepository productRepository) : IProductServ
 
     public async Task<bool> DeleteProductAsync(int id)
     {
-        var existingCustomer = await _productRepository.GetAsync(x => x.Id == id);
-        if (existingCustomer != null)
+        var customerEntity = await _productRepository.GetAsync(x => x.Id == id);
+        if (customerEntity == null)
+            return false;
+
+        try
         {
+            var result = await _productRepository.DeleteAsync(customerEntity);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
             return false;
         }
-
-        return await _productRepository.DeleteAsync(x => x.Id == id);
     }
 
 
-  
+
 
 }

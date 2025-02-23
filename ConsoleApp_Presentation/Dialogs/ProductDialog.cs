@@ -27,7 +27,7 @@ public class ProductDialog(IProductService productService) : IProductDialog
         }
         else
         {
-            Console.WriteLine("Ivalid price input.");
+            Console.WriteLine("Invalid price input.");
         }
 
 

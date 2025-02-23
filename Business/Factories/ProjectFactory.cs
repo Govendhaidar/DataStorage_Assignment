@@ -20,6 +20,9 @@ public static class ProjectFactory
         ProductId = form.ProductId
     };
 
+
+
+
     public static Project? Create(ProjectEntity entity) => entity == null ? null : new()
     {
         Id = entity.Id,
@@ -31,13 +34,15 @@ public static class ProjectFactory
         StatusId = entity.StatusId,
         UserId = entity.UserId,
         ProductId = entity.ProductId,
-        CustomerFirstName = entity.Customer.FirstName,
-        CustomerLastName = entity.Customer.LastName,
-        StatusName = entity.Status.StatusName,
-        UserName = $"{entity.User.FirstName} {entity.User.LastName}",
-        ProductName = entity.Product.ProductName
+        //CustomerFirstName = entity.Customer.FirstName,
+        //CustomerLastName = entity.Customer.LastName,
+        //StatusName = entity.Status.StatusName,
+        //UserName = $"{entity.User.FirstName} {entity.User.LastName}",
+        //ProductName = entity.Product.ProductName
 
     };
+
+
 
     public static ProjectUpdateForm Create(Project project) => new()
     {
@@ -51,6 +56,10 @@ public static class ProjectFactory
         UserId = project.UserId,
         ProductId = project.ProductId
     };
+
+
+
+
 
 
     public static ProjectEntity Create(ProjectEntity ProjectEntity, ProjectUpdateForm form) => new()

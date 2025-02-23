@@ -57,13 +57,7 @@ public abstract class BaseRepository<TEntity>(DataContext context) : IBaseReposi
 
         try
         {
-            //var existingEntity = await _dbSet.FirstOrDefaultAsync(expression) ?? null!;
-            //if (existingEntity == null)
-            //    return null!;
-
-            //_context.Entry(existingEntity).CurrentValues.SetValues(updatedEntity);
-            //await _context.SaveChangesAsync();
-            //return existingEntity;
+            
 
             _dbSet.Update(updatedEntity);
             await _context.SaveChangesAsync();
@@ -79,18 +73,16 @@ public abstract class BaseRepository<TEntity>(DataContext context) : IBaseReposi
 
 
 
-    public virtual async Task<bool> DeleteAsync(Expression<Func<TEntity, bool>> expression)
+    public virtual async Task<bool> DeleteAsync(TEntity entity)
     {
-        if (expression == null)
+        if (entity == null)
             return false;
 
         try
         {
-            var existingEntity = await _dbSet.FirstOrDefaultAsync(expression) ?? null!;
-            if (existingEntity == null)
-                return false;
+            
 
-            _dbSet.Remove(existingEntity);
+            _dbSet.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
 

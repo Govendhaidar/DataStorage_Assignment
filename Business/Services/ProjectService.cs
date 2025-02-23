@@ -1,8 +1,10 @@
-﻿using Business.DTOs;
+﻿using System.Diagnostics;
+using Business.DTOs;
 using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
 using Data.Interfaces;
+using Data.Repositories;
 
 namespace Business.Services;
 
@@ -17,6 +19,7 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
         await _projectRepository.CreateAsync(entity!);
 
         return ProjectFactory.Create(projectEntity!);
+
     }
 
 
@@ -55,18 +58,26 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
     }
 
 
-    public async Task<bool> DeleteProjectAsync(int id)
+    
+   public async Task<bool> DeleteProjectAsync(int id)
     {
-        var existingProject = await _projectRepository.GetAsync(x => x.Id == id);
-        if (existingProject != null)
+        var customerEntity = await _projectRepository.GetAsync(x => x.Id == id);
+        if (customerEntity == null)
+            return false;
+
+        try
         {
+            var result = await _projectRepository.DeleteAsync(customerEntity);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
             return false;
         }
-
-        return await _projectRepository.DeleteAsync(x => x.Id == id);
     }
 
-    
+
 
 
 }
